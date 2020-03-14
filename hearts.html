@@ -1,0 +1,231 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+     "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--
+ * Example HTML for CSS Playing Cards
+ *
+ * @author   Anika Henke <anika@selfthinker.org>
+ * @license  CC BY-SA [http://creativecommons.org/licenses/by-sa/3.0]
+ * @version  2011-06-14
+ * @link     http://selfthinker.github.com/CSS-Playing-Cards/
+-->
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8" />
+    <title>Hearts via socket.io</title>
+    <link rel="stylesheet" type="text/css" href="cards.css" media="screen" />
+    <!-- the following js and css is not part of the CSS cards, but only for this example page -->
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
+    <script type="text/javascript"><!--
+    $(document).ready(function(){
+        $('.options').addClass('active');
+    });
+    //--></script>
+    <style type="text/css"><!--
+        body {
+            margin: 2em 20%;
+        }
+        .options.active {
+            position: fixed;
+            top: 1em;
+            right: 1em;
+            background: #ddd;
+            padding: .5em;
+        }
+        .options.active h3 {
+            font-size: 1.2em;
+        }
+        .options.active ul {
+            padding: 0;
+        }
+        .options.active li {
+            color: #00c;
+            text-decoration: underline;
+            margin-left: 1.5em;
+            cursor: pointer;
+        }
+        .options.active li:hover {
+            text-decoration: none;
+        }
+        div.clear {
+            clear: both;
+            height: 0;
+            line-height: 0;
+            font-size: 1px;
+            visibility: hidden;
+        }
+
+    .nort {
+      float: right;
+      padding: 10px;
+    }
+
+    .east {
+      float: right;
+      padding: 10px;
+    }
+
+    .west {
+      float: left;
+      padding: 10px;
+    }
+
+    .south {
+      float: left;
+      padding: 10px;
+    }
+
+    --></style>
+</head>
+<body>
+
+<div class="playingCards fourColours">
+
+<div class="player north">
+    <ul class="table">
+        <li>
+            <a class="card rank-7 diams" href="#">
+                <span class="rank">7</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-8 hearts" href="#">
+                <span class="rank">8</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-9 spades" href="#">
+                <span class="rank">9</span>
+                <span class="suit">&spades;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-10 clubs" href="#">
+                <span class="rank">10</span>
+                <span class="suit">&clubs;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-j diams" href="#">
+                <span class="rank">J</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-5 clubs" href="#">
+                <span class="rank">5</span>
+                <span class="suit">&clubs;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-6 diams" href="#">
+                <span class="rank">6</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">Q</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k spades" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&spades;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+    <div class="clear"></div>
+<div class="player west">
+    <ul class="table">
+        <li>
+            <a class="card rank-7 diams" href="#">
+                <span class="rank">7</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-8 hearts" href="#">
+                <span class="rank">8</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-9 spades" href="#">
+                <span class="rank">9</span>
+                <span class="suit">&spades;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-10 clubs" href="#">
+                <span class="rank">10</span>
+                <span class="suit">&clubs;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-j diams" href="#">
+                <span class="rank">J</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-5 clubs" href="#">
+                <span class="rank">5</span>
+                <span class="suit">&clubs;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-6 diams" href="#">
+                <span class="rank">6</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">Q</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k diams" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k diams" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k diams" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k diams" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+        <li>
+            <a class="card rank-k diams" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&diams;</span>
+            </a>
+        </li>
+    </ul>
+</div>
+    <div class="clear"></div>
+
+</div>
+
+
+
+</body>
+</html>
