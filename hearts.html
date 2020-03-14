@@ -16,35 +16,10 @@
     <!-- the following js and css is not part of the CSS cards, but only for this example page -->
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
     <script type="text/javascript"><!--
-    $(document).ready(function(){
-        $('.options').addClass('active');
-    });
     //--></script>
     <style type="text/css"><!--
         body {
             margin: 2em 20%;
-        }
-        .options.active {
-            position: fixed;
-            top: 1em;
-            right: 1em;
-            background: #ddd;
-            padding: .5em;
-        }
-        .options.active h3 {
-            font-size: 1.2em;
-        }
-        .options.active ul {
-            padding: 0;
-        }
-        .options.active li {
-            color: #00c;
-            text-decoration: underline;
-            margin-left: 1.5em;
-            cursor: pointer;
-        }
-        .options.active li:hover {
-            text-decoration: none;
         }
         div.clear {
             clear: both;
@@ -78,17 +53,25 @@
 </head>
 <body>
 
-<div class="player" id="north">
-    <div class="playingCards fourColours">
-    <ul class="table">
+<div class="player" id="west">
+    <div class="playingCards fourColours rotateHand">
+    <ul class="hand">
     </ul>
     <div class="clear"></div>
     </div>
 </div>
 
-<div class="player" id="west">
-    <div class="playingCards fourColours">
-    <ul class="table">
+<div class="player" id="north">
+    <div class="playingCards fourColours rotateHand">
+    <ul class="hand">
+    </ul>
+    <div class="clear"></div>
+    </div>
+</div>
+
+<div class="player" id="east">
+    <div class="playingCards fourColours rotateHand">
+    <ul class="hand">
     </ul>
     <div class="clear"></div>
     </div>
@@ -102,37 +85,24 @@
     </div>
 </div>
 
-<div class="player" id="east">
-    <div class="playingCards fourColours">
-    <ul class="table">
-    </ul>
-    <div class="clear"></div>
-    </div>
-</div>
-
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
     function htmlToElement(html) {
         var template = document.createElement('template');
-        html = html.trim(); // Never return a text node of whitespace as the result
         template.innerHTML = html;
         return template.content.firstChild;
     }
 
     function onAddCard(card) {
-        console.log(card.html);
         let elem = htmlToElement(card.html);
-        console.log(elem);
         let player = $(`#${card.player}`);
-        console.log(player.length);
-
         let hand = player.find('ul');
-        console.log(hand);
         hand.append(elem);
     }
 
     var socket = io();
+
     socket.on('addcard', card => onAddCard(card));
 </script>
 </body>

@@ -81,12 +81,22 @@ function giveCardsTo(player, cards)
     }
 }
 
+function cardToOrd({rank, suit})
+{
+    return suit*13 + rank;
+}
+
 function distribute(deck)
 {
-    giveCardsTo('north', deck.slice(0,13));
-    giveCardsTo('east', deck.slice(13,26));
-    giveCardsTo('south', deck.slice(26,39));
-    giveCardsTo('west', deck.slice(39,52));
+    const compare = (a, b) => cardToOrd(a) - cardToOrd(b);
+    function sort(hand)
+    {
+        return hand.sort(compare);
+    }
+    giveCardsTo('north', sort(deck.slice(0,13)));
+    giveCardsTo('east', sort(deck.slice(13,26)));
+    giveCardsTo('south', sort(deck.slice(26,39)));
+    giveCardsTo('west', sort(deck.slice(39,52)));
 }
 
 io.on('connection', socket => {
