@@ -156,38 +156,54 @@
     const suitGlyphs = ['&clubs;', '&diams;', '&spades;', '&hearts;']
     const rankNames = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
-    function cardAsHtml({rank, suit})
+    function onCardClick({rank, suit})
+    {
+        console.log('click', {rank, suit});
+        socket.emit('card', {rank, suit});
+        const R = rankNames[rank];
+        const S = suitNames[suit];
+
+        const human = $('#human');
+        console.log('human', human.length);
+        const selector = `.card.rank-${R.toLowerCase()}.${S}`;    //
+        console.log(selector);
+        const card = human.find(selector);
+        console.log('card', card.length);
+        card.remove();
+    }
+
+    function cardAsHtml({rank, suit, active})
     {
         const R = rankNames[rank];
         const S = suitNames[suit];
         const G = `&${S};`;
-        return `<a class="card rank-${R.toLowerCase()} ${S}" href="#"><span class="rank">${R}</span><span class="suit">${G}</span></a>`;
+        const href = !active ? '' : `href="javascript:onCardClick({rank: ${rank},suit: ${suit}})"`;
+        return `<a class="card rank-${R.toLowerCase()} ${S}" ${href}"><span class="rank">${R}</span><span class="suit">${G}</span></a>`;
     }
 
-    function cardAsListItem({rank, suit})
+    function cardAsListItem({rank, suit, active})
     {
-        const html = cardAsHtml({rank, suit});
+        const html = cardAsHtml({rank, suit, active});
         return `<li>${html}</li>`;
     }
 
-    function addCard(parent, {rank, suit})
+    function addCard(parent, {rank, suit, active})
     {
-        parent.append(cardAsListItem({rank, suit}));
+        parent.append(cardAsListItem({rank, suit, active}));
     }
 
     function onAddCard({id, card}) {
         let spot = $(`#${id}`);
         let hand = spot.find('ul');
-        addCard(hand, card)
+        let active = id == 'human';
+        const {rank, suit} = card;
+        addCard(hand, {rank, suit, active});
     }
 
     function onShowCard({id, card})
     {
-        console.log('onShowCard:', {id, card});
         let place = $(`#${id}`);
-        console.log(`Spot ${id}`, place.length);
         let spot = place.find('div.playingCards');
-        console.log('Spot', spot.length);
         if (card)
         {
             spot.html(cardAsHtml(card));

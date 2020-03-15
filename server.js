@@ -96,6 +96,7 @@ io.on('connection', socket => {
     socket.on('disconnect', () => {
         console.log('user disconnected');
     });
+    socket.on('card', ({rank, suit}) => { console.log('card:', {rank, suit}); });
 
     const deck = deal();
     distribute(deck);
