@@ -31,19 +31,6 @@ const diams = 1;
 const spades = 2;
 const hearts = 3;
 
-function cardAsHtmlString({rank, suit})
-{
-    const suitNames = ['clubs', 'diams', 'spades', 'hearts'];
-    const suitGlyphs = ['&clubs;', '&diams;', '&spades;', '&hearts;']
-    const rankNames = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
-
-    const R = rankNames[rank];
-    const S = suitNames[suit];
-    const G = `&${S};`;
-    const s = `<li><a class="card rank-${R.toLowerCase()} ${S}" href="#"><span class="rank">${R}</span><span class="suit">${G}</span></a></li>`;
-    return s;
-}
-
 function deal()
 {
     const array = [];
@@ -72,13 +59,17 @@ function deal()
     return array;
 }
 
-function giveCardsTo(player, cards)
+function giveCardsTo(id, cards)
 {
     for (card of cards)
     {
-        let html = cardAsHtmlString(card);
-        io.emit('addcard', {html, player});
+        io.emit('addcard', {id, card});
     }
+}
+
+function showCard(id, card)
+{
+    io.emit('showcard', {id, card})
 }
 
 function cardToOrd({rank, suit})
@@ -93,10 +84,11 @@ function distribute(deck)
     {
         return hand.sort(compare);
     }
-    giveCardsTo('north', sort(deck.slice(0,13)));
-    giveCardsTo('east', sort(deck.slice(13,26)));
-    giveCardsTo('south', sort(deck.slice(26,39)));
-    giveCardsTo('west', sort(deck.slice(39,52)));
+    giveCardsTo('human', sort(deck.slice(0,13)));
+    showCard('west', null);
+    showCard('north', deck[14]);
+    showCard('east', deck[15]);
+    giveCardsTo('played', sort(deck.slice(15,18)));
 }
 
 io.on('connection', socket => {

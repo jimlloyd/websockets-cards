@@ -34,7 +34,7 @@
     grid-column-end: 3;
     grid-row-start: 1;
     grid-row-end: 2;
-    justify-content: center;
+    text-align: center
 }
 
 .nefill {
@@ -49,14 +49,15 @@
     grid-column-end: 2;
     grid-row-start: 2;
     grid-row-end: 3;
-    text-align: center
+    margin: 0 auto;
 }
 
-.played {
+#played {
     grid-column-start: 2;
     grid-column-end: 3;
     grid-row-start: 2;
     grid-row-end: 3;
+    margin: 0 auto;
 }
 
 .east {
@@ -64,10 +65,10 @@
     grid-column-end: 4;
     grid-row-start: 2;
     grid-row-end: 3;
-    text-align: center
+    margin: 0 auto;
 }
 
-.south {
+#south {
     grid-column-start: 1;
     grid-column-end: 4;
     grid-row-start: 3;
@@ -75,10 +76,19 @@
     margin: 0 auto;
 }
 
+
+#human {
+    grid-column-start: 1;
+    grid-column-end: 4;
+    grid-row-start: 4;
+    grid-row-end: 5;
+    margin: 0 auto;
+}
+
 .frame {
     display: grid;
     grid-gap: 10px;
-    grid-template-rows: repeat(3, 1fr);
+    grid-template-rows: repeat(4, 1fr);
     grid-template-columns: 1fr 2fr 1fr;
     background-color: #fff;
     color: #444;
@@ -89,41 +99,52 @@
 <body>
 
 <div class="frame">
-    <div class="nwfill" id="nwfill">
-        North West Fill
-    </div>
 
-    <div class="player north" id="north">
+    <div class="play north" id="north">
         <div class="playingCards fourColours">
-            <ul class="hand"></ul>
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">Q</span>
+                <span class="suit">&hearts;</span>
+            </a>
         </div>
     </div>
 
-    <div class="nefill" id="nefill">
-        North East Fill
-    </div>
-
-    <div class="player west" id="west">
-        <div class="playingCards fourColours rotateHand">
-            <ul class="hand"></ul>
-        </div>
-    </div>
-
-    <div class="played" id="played">
-        <div class="playingCards fourColours rotateHand">
-            <ul class="hand"></ul>
-        </div>
-    </div>
-
-    <div class="player east" id="east">
-        <div class="playingCards fourColours rotateHand">
-            <ul class="hand"></ul>
-        </div>
-    </div>
-
-    <div class="player south" id="south">
+    <div class="play west" id="west">
         <div class="playingCards fourColours">
-            <ul class="hand"></ul>
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">J</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="played">
+        <div class="playingCards fourColours">
+            <ul class="table"></ul>
+        </div>
+    </div>
+
+    <div class="play east" id="east">
+        <div class="playingCards fourColours">
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">K</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </div>
+    </div>
+
+    <div class="play south" id="south">
+        <div class="playingCards fourColours">
+            <a class="card rank-q hearts" href="#">
+                <span class="rank">A</span>
+                <span class="suit">&hearts;</span>
+            </a>
+        </div>
+    </div>
+
+    <div id="human">
+        <div class="playingCards fourColours">
+            <ul class="table"></ul>
         </div>
     </div>
 
@@ -131,25 +152,56 @@
 
 <script src="/socket.io/socket.io.js"></script>
 <script>
-    function htmlToElement(html) {
-        var template = document.createElement('template');
-        template.innerHTML = html;
-        return template.content.firstChild;
+    const suitNames = ['clubs', 'diams', 'spades', 'hearts'];
+    const suitGlyphs = ['&clubs;', '&diams;', '&spades;', '&hearts;']
+    const rankNames = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
+
+    function cardAsHtml({rank, suit})
+    {
+        const R = rankNames[rank];
+        const S = suitNames[suit];
+        const G = `&${S};`;
+        return `<a class="card rank-${R.toLowerCase()} ${S}" href="#"><span class="rank">${R}</span><span class="suit">${G}</span></a>`;
     }
 
-    function onAddCard(card) {
-        let elem = htmlToElement(card.html);
-        let player = $(`#${card.player}`);
-        console.log('Card:', card)
-        console.log(`Player ${card.player}`, player.length);
-        let hand = player.find('ul');
-        console.log('Hand', hand.length);
-        hand.append(elem);
+    function cardAsListItem({rank, suit})
+    {
+        const html = cardAsHtml({rank, suit});
+        return `<li>${html}</li>`;
+    }
+
+    function addCard(parent, {rank, suit})
+    {
+        parent.append(cardAsListItem({rank, suit}));
+    }
+
+    function onAddCard({id, card}) {
+        let spot = $(`#${id}`);
+        let hand = spot.find('ul');
+        addCard(hand, card)
+    }
+
+    function onShowCard({id, card})
+    {
+        console.log('onShowCard:', {id, card});
+        let place = $(`#${id}`);
+        console.log(`Spot ${id}`, place.length);
+        let spot = place.find('div.playingCards');
+        console.log('Spot', spot.length);
+        if (card)
+        {
+            spot.html(cardAsHtml(card));
+        }
+        else
+        {
+            spot.empty();
+        }
     }
 
     var socket = io();
 
-    socket.on('addcard', card => onAddCard(card));
+    socket.on('addcard', ({id, card}) => onAddCard({id, card}));
+    socket.on('showcard', ({id, card}) => onShowCard({id, card}));
 </script>
 </body>
 </html>
