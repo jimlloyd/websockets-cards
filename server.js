@@ -10,7 +10,7 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/hearts.html');
 });
 
-app.use(express.static('public'));
+app.use(express.static('public', {maxage: '0h'}));
 
 const two = 0;
 const three = 1;
