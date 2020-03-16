@@ -77,3 +77,5 @@ vary
 ws
 xmlhttprequest-ssl
 yeast
+.vscode/
+build/
