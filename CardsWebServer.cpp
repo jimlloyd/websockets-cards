@@ -46,23 +46,9 @@ enum Seats : char
     EAST = 3,
 };
 
-struct Card
-{
-    Card(int r, int s) : rank{r}, suit{s} {}
-
-    static Card make(int card)
-    {
-        int rank = card % 13;
-        int suit = card / 13;
-        return Card{rank, suit};
-    }
-
-    const int rank;
-    const int suit;
-};
-
 using Socket = uWS::WebSocket<false, true>;
 
+template <size_t size>
 using Message = std::array<char, size>;
 
 template <size_t size>

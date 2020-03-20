@@ -4,6 +4,33 @@
 
 namespace cardsws {
 
+struct Card
+{
+    using Int = std::int8_t;
+    Card(Int r, Int s) : rank{r}, suit{s} {}
+
+    Card() = delete;
+    ~Card() = default;
+
+    Card(const Card&) = default;
+    Card& operator=(const Card&) = default;
+    Card& operator=(Card&&) = delete;
+
+    static constexpr Int kRanks{13};
+
+    static Card make(Int card)
+    {
+        Int rank = card % kRanks;
+        Int suit = card / kRanks;
+        return Card{rank, suit};
+    }
+
+    const Int rank;
+    const Int suit;
+};
+
+
+
 class CardsWebServer
 {
 public:
