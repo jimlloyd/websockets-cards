@@ -1,14 +1,11 @@
-/* This is a simple HTTP(S) web server much like Python's SimpleHTTPServer */
-
 #include <App.h>
 
 #include <chrono>
 #include <random>
 
-/* Helpers for this example */
-#include "uWebSockets/examples/helpers/AsyncFileReader.h"
-#include "uWebSockets/examples/helpers/AsyncFileStreamer.h"
-#include "uWebSockets/examples/helpers/Middleware.h"
+#include "helpers/AsyncFileReader.h"
+#include "helpers/AsyncFileStreamer.h"
+#include "helpers/Middleware.h"
 
 /* optparse */
 #define OPTPARSE_IMPLEMENTATION
