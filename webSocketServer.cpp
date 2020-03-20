@@ -14,6 +14,35 @@
 #define OPTPARSE_IMPLEMENTATION
 #include "uWebSockets/examples/helpers/optparse.h"
 
+enum CommandCodes : char
+{
+    DEALCARD = 0,
+    PLAYCARD = 1,
+    CLEARTRICK = 2,
+    CARDCLICKED = 3,
+};
+
+using Socket = uWS::WebSocket<false, true>;
+
+template <size_t size>
+void sendMessage(Socket* ws, const std::array<char, size>& message)
+{
+    std::string_view msg(message.data(), size);
+    ws->send(msg, uWS::BINARY);
+}
+
+void clearTrick(Socket* ws)
+{
+    std::array<char, 1> message = {CLEARTRICK};
+    sendMessage(ws, message);
+};
+
+void dealCard(Socket* ws, char card)
+{
+    std::array<char, 2> message = {DEALCARD, card};
+    sendMessage(ws, message);
+}
+
 int main(int argc, char **argv) {
 
     int option;
@@ -30,7 +59,7 @@ int main(int argc, char **argv) {
         {0}
     };
 
-    int port = 3000;
+    int port = 3001;
     struct us_socket_context_options_t ssl_options = {};
 
     while ((option = optparse_long(&options, longopts, nullptr)) != -1) {
@@ -77,22 +106,16 @@ int main(int argc, char **argv) {
             std::cout << "Deck shuffled\n";
         }
 
+        void dealHand(Socket* ws)
+        {
+            for (int i=0; i<13; i++)
+            {
+                dealCard(ws, mDeck[i]);
+            }
+        }
+
         std::array<uint8_t, kCardsInDeck> mDeck;
     };
-
-    uWS::TemplatedApp<false>::WebSocketBehavior behavior{
-        .open = [](auto *ws, auto *req) {
-            /* Open event here, you may access ws->getUserData() which points to a PerSocketData struct */
-        },
-        .message = [](auto *ws, std::string_view message, uWS::OpCode opCode) {
-            ws->send(message, opCode);
-        },
-        .close = [](auto *ws, int code, std::string_view message) {
-            /* You may access ws->getUserData() here */
-        }
-    };
-
-
 
     uWS::App()
 
@@ -112,9 +135,12 @@ int main(int argc, char **argv) {
         /* Handlers */
         .open = [](auto *ws, auto *req) {
             /* Open event here, you may access ws->getUserData() which points to a PerSocketData struct */
+            clearTrick(ws);
+            reinterpret_cast<PerSocketData*>(ws->getUserData())->dealHand(ws);
         },
         .message = [](auto *ws, std::string_view message, uWS::OpCode opCode) {
-            ws->send(message, opCode);
+
+
         },
         .drain = [](auto *ws) {
             /* Check ws->getBufferedAmount() here */
