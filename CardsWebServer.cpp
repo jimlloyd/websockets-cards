@@ -38,14 +38,6 @@ enum CommandCodes : char
     CARDCLICKED = 3,
 };
 
-enum Seats : char
-{
-    SOUTH = 0,
-    WEST = 1,
-    NORTH = 2,
-    EAST = 3,
-};
-
 using Socket = uWS::WebSocket<false, true>;
 
 template <size_t size>
