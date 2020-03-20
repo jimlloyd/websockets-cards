@@ -65,18 +65,8 @@ void playCard(Socket* ws, char card, char seat)
     sendMessage(ws, message);
 }
 
-int main(int argc, char **argv)
+void launch(const std::string& root, int port=3001)
 {
-    // For now, we use a hard-coded port
-    int port = 3001;
-
-    if (argc <= 1)
-    {
-        std::cerr << "Must provide one argument: the path to the root directory\n";
-        exit(1);
-    }
-    char *root = argv[1];
-
     AsyncFileStreamer asyncFileStreamer(root);
 
     constexpr unsigned kCardsInDeck{52};
@@ -88,7 +78,6 @@ int main(int argc, char **argv)
             for (uint8_t i=0; i<kCardsInDeck; ++i) { mDeck[i] = i; }
             unsigned seed = std::chrono::system_clock::now().time_since_epoch().count();
             std::shuffle(mDeck.begin(), mDeck.end(), std::default_random_engine(seed));
-            std::cout << "Deck shuffled\n";
         }
 
         static PerSocketData* data(Socket* ws) { return reinterpret_cast<PerSocketData*>(ws->getUserData()); }
@@ -163,5 +152,20 @@ int main(int argc, char **argv)
 
     .run();
 
-    std::cout << "Failed to listen to port " << port << std::endl;
+    std::cerr << "Failed to listen to port " << port << std::endl;
+    exit(1);
+}
+
+int main(int argc, char **argv)
+{
+    // For now, we use a hard-coded port
+    int port = 3001;
+
+    if (argc <= 1)
+    {
+        std::cerr << "Must provide one argument: the path to the root directory\n";
+        exit(1);
+    }
+    char *root = argv[1];
+    launch(root, port);
 }
