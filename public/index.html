@@ -203,7 +203,7 @@
     {
         console.log('click', {rank, suit});
 
-        ws.send(Uint8Array.of(CARDCLICKED, asCard({rank, suit})));
+        socket.send(Uint8Array.of(COMMANDS.CARDCLICKED, asCard({rank, suit})));
 
         const R = rankNames[rank];
         const S = suitNames[suit];

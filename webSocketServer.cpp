@@ -22,6 +22,29 @@ enum CommandCodes : char
     CARDCLICKED = 3,
 };
 
+enum Seats : char
+{
+    SOUTH = 0,
+    WEST = 1,
+    NORTH = 2,
+    EAST = 3,
+};
+
+struct Card
+{
+    Card(int r, int s) : rank{r}, suit{s} {}
+
+    static Card make(int card)
+    {
+        int rank = card % 13;
+        int suit = card / 13;
+        return Card{rank, suit};
+    }
+
+    const int rank;
+    const int suit;
+};
+
 using Socket = uWS::WebSocket<false, true>;
 
 template <size_t size>
@@ -40,6 +63,12 @@ void clearTrick(Socket* ws)
 void dealCard(Socket* ws, char card)
 {
     std::array<char, 2> message = {DEALCARD, card};
+    sendMessage(ws, message);
+}
+
+void playCard(Socket* ws, char card, char seat)
+{
+    std::array<char, 3> message = {PLAYCARD, card, seat};
     sendMessage(ws, message);
 }
 
@@ -106,12 +135,22 @@ int main(int argc, char **argv) {
             std::cout << "Deck shuffled\n";
         }
 
+        static PerSocketData* data(Socket* ws) { return reinterpret_cast<PerSocketData*>(ws->getUserData()); }
+
         void dealHand(Socket* ws)
         {
             for (int i=0; i<13; i++)
             {
                 dealCard(ws, mDeck[i]);
             }
+        }
+
+        void dummyTrick(Socket* ws)
+        {
+            playCard(ws, mDeck[0], SOUTH); // play first card we dealt to human above
+            playCard(ws, mDeck[13], WEST);
+            playCard(ws, mDeck[14], NORTH);
+            playCard(ws, mDeck[15], EAST);
         }
 
         std::array<uint8_t, kCardsInDeck> mDeck;
@@ -136,11 +175,15 @@ int main(int argc, char **argv) {
         .open = [](auto *ws, auto *req) {
             /* Open event here, you may access ws->getUserData() which points to a PerSocketData struct */
             clearTrick(ws);
-            reinterpret_cast<PerSocketData*>(ws->getUserData())->dealHand(ws);
+            PerSocketData::data(ws)->dealHand(ws);
+            PerSocketData::data(ws)->dummyTrick(ws);
         },
         .message = [](auto *ws, std::string_view message, uWS::OpCode opCode) {
 
-
+            const auto command = message[0];
+            assert(command == CARDCLICKED);
+            const auto card = Card::make(message[1]);
+            std::cout << "Human clicked on card rank:" << card.rank << " suit:" << card.suit << '\n';
         },
         .drain = [](auto *ws) {
             /* Check ws->getBufferedAmount() here */
