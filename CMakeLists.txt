@@ -1,14 +1,14 @@
-cmake_minimum_required (VERSION 3.10.2)
+cmake_minimum_required (VERSION 3.16.2)
 
-find_program(CMAKE_C_COMPILER gcc-8)
-find_program(CMAKE_CXX_COMPILER g++-8)
+find_program(CMAKE_C_COMPILER gcc)
+find_program(CMAKE_CXX_COMPILER g++)
 
 if(NOT CMAKE_C_COMPILER)
-  message(FATAL_ERROR "Cannot find gcc-8")
+  message(FATAL_ERROR "Cannot find gcc")
 endif()
 
 if(NOT CMAKE_CXX_COMPILER)
-  message(FATAL_ERROR "Cannot find g++-8")
+  message(FATAL_ERROR "Cannot find g++")
 endif()
 
 set(CMAKE_CXX_STANDARD 17)
